@@ -1,0 +1,90 @@
+# Full ML pipeline: data → annotate → train → validate → evaluate → optimize → export → deploy
+name: "full-pipeline-example"
+description: "End-to-end CV model lifecycle"
+stages: ["data", "annotate", "train", "validate", "evaluate", "optimize", "export", "deploy"]
+
+runtime:
+  workspace: "./vw_workspace"
+  device: "auto"
+  seed: 42
+  cache: true
+
+data:
+  enabled: true
+  source: "data/raw/"
+  target: "data/processed/traffic-v1/"
+  dataset_name: "traffic-v1"
+  validation:
+    min_resolution: [32, 32]
+    max_resolution: [4096, 4096]
+    allowed_formats: [".jpg", ".jpeg", ".png", ".bmp"]
+    blur_threshold: 100
+  dedup:
+    enabled: true
+    method: "phash"
+    threshold: 5
+  split:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+    seed: 42
+  augment:
+    enabled: false
+
+annotate:
+  enabled: true
+  input_format: "coco"
+  output_format: "coco"
+  quality_checks:
+    enabled: true
+
+train:
+  enabled: true
+  framework: "ultralytics"
+  task: "object_detection"
+  model:
+    architecture: "yolov8n"
+    pretrained: true
+    num_classes: 10
+  data:
+    image_size: [640, 640]
+    batch_size: 16
+  training:
+    epochs: 100
+    optimizer: "adamw"
+    lr: 0.001
+    mixed_precision: "fp16"
+
+validate:
+  enabled: true
+  batch_size: 32
+  metrics: ["mAP", "mAP_50", "mAP_75", "F1", "confusion_matrix"]
+
+evaluate:
+  enabled: true
+  curves: ["pr_curve", "confusion_matrix", "f1_confidence"]
+
+optimize:
+  enabled: true
+  methods:
+    - type: "quantize"
+      precision: "int8"
+    - type: "prune"
+      method: "l1_structured"
+      amount: 0.3
+
+export:
+  enabled: true
+  onnx:
+    opset_version: 17
+    simplify: true
+  targets:
+    - platform: "onnx"
+    - platform: "tensorrt"
+      precision: "fp16"
+    - platform: "tflite"
+      precision: "int8"
+
+deploy:
+  enabled: false
+  devices: []

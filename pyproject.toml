@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools>=75.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vision-workbench"
+version = "0.1.0"
+description = "End-to-end Computer Vision MLOps Workbench — from data to edge deployment"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "PhilomathOne"},
+]
+keywords = ["computer-vision", "mlops", "deep-learning", "model-deployment", "edge-inference"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "numpy>=1.26,<3.0",
+    "opencv-python>=4.9,<5.0",
+    "PyYAML>=6.0",
+    "pydantic>=2.0,<3.0",
+    "typer>=0.12,<1.0",
+    "Pillow>=10.0,<12.0",
+    "structlog>=24.0",
+    "rich>=13.0",
+    "omegaconf>=2.3",
+    "albumentations>=1.4",
+    "scikit-learn>=1.4",
+    "imagehash>=4.3",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+torch       = ["torch>=2.0", "torchvision>=0.15", "pytorch-lightning>=2.0"]
+yolo        = ["ultralytics>=8.0"]
+mmdet       = ["mmdet>=3.0", "mmengine>=0.10", "mmcv>=2.0"]
+huggingface = ["transformers>=4.36", "timm>=0.9", "datasets>=2.0"]
+mediapipe   = ["mediapipe>=0.10"]
+mlflow      = ["mlflow>=2.10"]
+wandb       = ["wandb>=0.16"]
+optimize    = ["onnx>=1.15", "onnxruntime>=1.17", "onnx-simplifier>=0.4"]
+tensorrt    = ["onnx-tensorrt"]
+openvino    = ["openvino>=2024.0"]
+tflite      = ["tensorflow>=2.15"]
+coremltools = ["coremltools>=7.0"]
+hpo         = ["optuna>=3.0"]
+dvc         = ["dvc>=3.0"]
+serve       = ["fastapi>=0.110", "uvicorn>=0.27", "gradio>=4.0", "prometheus-client>=0.19"]
+dev         = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "pytest-xdist>=3.0",
+    "ruff>=0.1",
+    "mypy>=1.7",
+    "pre-commit>=3.0",
+]
+all = [
+    "vision-workbench[torch,yolo,mmdet,huggingface,mediapipe,mlflow,optimize,serve,hpo,dvc]",
+]
+
+[project.scripts]
+vision-workbench = "vision_workbench.cli.app:app"
+vw = "vision_workbench.cli.app:app"
+
+[project.entry-points."vision_workbench.detectors"]
+# Third-party detector plugins register here
+
+[project.urls]
+Homepage = "https://github.com/PhilomathOne/vision-workbench"
+Documentation = "https://github.com/PhilomathOne/vision-workbench/tree/main/docs"
+Repository = "https://github.com/PhilomathOne/vision-workbench"
+
+[tool.setuptools]
+packages = {find = {where = ["src"]}}
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = ["-v", "--tb=short", "--strict-markers"]
+markers = [
+    "slow: marks tests as slow",
+    "gpu: marks tests that require GPU",
+    "integration: marks integration tests",
+]
