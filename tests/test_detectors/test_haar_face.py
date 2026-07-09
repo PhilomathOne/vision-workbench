@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from vision_workbench.detectors.opencv.haar_face import HaarFaceDetector
+from vision_workbench.detectors.haar_face import HaarFaceDetector
 
 
 class TestHaarFaceDetector:

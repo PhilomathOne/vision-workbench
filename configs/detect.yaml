@@ -1,0 +1,55 @@
+# Object Detection Pipeline — Data → Train → Validate → Export → Deploy
+name: "object-detection"
+description: "End-to-end YOLO object detection workflow"
+stages: ["data", "train", "validate", "export", "deploy"]
+
+runtime:
+  workspace: "./vw_workspace"
+  device: "auto"
+  seed: 42
+
+data:
+  source: "data/raw/"
+  target: "data/processed/traffic/"
+  format: "yolo"
+  classes:
+    - person
+    - car
+    - truck
+    - bus
+    - motorcycle
+  split:
+    train: 0.7
+    val: 0.2
+    test: 0.1
+    seed: 42
+  validation:
+    min_resolution: [1, 1]
+    max_resolution: [8192, 8192]
+    allowed_formats: [".jpg", ".jpeg", ".png", ".bmp"]
+
+train:
+  model: "yolov8n"
+  pretrained: true
+  epochs: 100
+  batch: 16
+  imgsz: 640
+  lr0: 0.01
+  optimizer: "auto"
+
+validation:
+  split: "val"
+  conf: 0.001
+  iou: 0.6
+  plots: true
+
+export:
+  formats: ["onnx"]
+  opset: 17
+  simplify: true
+  fp16: false
+  int8: false
+
+deploy:
+  enabled: true
+  devices: []

@@ -125,12 +125,4 @@ class Registry(Generic[T]):
 
 # Global registry instances — populated as modules are imported
 detector_registry: Registry = Registry("detector")
-format_registry: Registry = Registry("format_converter")
-framework_registry: Registry = Registry("framework")
 exporter_registry: Registry = Registry("exporter")
-backbone_registry: Registry = Registry("backbone")
-neck_registry: Registry = Registry("neck")
-head_registry: Registry = Registry("head")
-attention_registry: Registry = Registry("attention")
-fusion_registry: Registry = Registry("fusion")
-architecture_registry: Registry = Registry("architecture")

@@ -64,12 +64,13 @@ dev         = [
     "pre-commit>=3.0",
 ]
 all = [
-    "vision-workbench[torch,yolo,mmdet,huggingface,mediapipe,mlflow,optimize,serve,hpo,dvc]",
+    "vision-workbench[torch,yolo,mmdet,huggingface,mediapipe,mlflow,optimize,hpo,dvc]",
 ]
 
 [project.scripts]
-vision-workbench = "vision_workbench.cli.app:app"
-vw = "vision_workbench.cli.app:app"
+# CLI removed during refactor — use run_pipeline.py and run_detect.py
+# vision-workbench = "vision_workbench.cli.app:app"
+# vw = "vision_workbench.cli.app:app"
 
 [project.entry-points."vision_workbench.detectors"]
 # Third-party detector plugins register here

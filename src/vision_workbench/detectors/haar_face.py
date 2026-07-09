@@ -1,15 +1,14 @@
 """OpenCV Haar Cascade face detector — zero extra dependencies."""
 
 import time
-from pathlib import Path
 from typing import Any
 
 import cv2
 import numpy as np
 
 from vision_workbench.core.exceptions import InferenceError
-from vision_workbench.core.result import BoundingBox, DetectionResult
 from vision_workbench.core.registry import detector_registry
+from vision_workbench.core.result import BoundingBox, DetectionResult
 from vision_workbench.detectors.base import BaseDetector
 
 
@@ -40,13 +39,8 @@ class HaarFaceDetector(BaseDetector):
         boxes = [BoundingBox(x1=float(x), y1=float(y), x2=float(x + w), y2=float(y + h), class_name="face") for (x, y, w, h) in faces]
         dt = (time.perf_counter() - t0) * 1000
         return DetectionResult(
-            source_path=None,
-            image_shape=image.shape,
-            boxes=boxes,
-            detector_name="opencv_haar_face",
-            task_type="face_detection",
-            framework="opencv",
-            processing_time_ms=dt,
+            source_path=None, image_shape=image.shape, boxes=boxes,
+            detector_name="opencv_haar_face", task_type="face_detection", framework="opencv", processing_time_ms=dt,
         )
 
     def cleanup(self) -> None:
